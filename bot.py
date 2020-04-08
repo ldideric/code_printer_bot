@@ -17,4 +17,4 @@ for filename in os.listdir('./cogs'):
 		client.load_extension(f'cogs.{filename[:-3]}')
 
 
-client.run('Njk3NDU5MDQ1MjM3NTIyNDQz.Xo3lYA.DuyufRGGgk93M_sct2Q81oVCLIY')
+client.run('Not today hackers!')
