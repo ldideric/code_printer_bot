@@ -33,9 +33,13 @@ class Git(commands.Cog):
 			await ctx.send("Link does not seem to exist! Check if flags are correct!")
 			return
 		if not format_str:
-			print(flags[0][2].rfind('.'))
-			print(flags[0][2][flags[0][2].rfind('.') + 1:])
-			format_str = str(flags[0][2][flags[0][2].rfind('.') + 1:])
+			format_str = flags[0][2][flags[0][2].rfind('.') + 1:]
+			if format_str.rfind('/') == -1:
+				format_str = flags[0][2][flags[0][2].rfind('.') + 1:]
+				if format_str == 's':
+					format_str = 'x86asm'
+			else:
+				format_str = flags[0][2][flags[0][2].rfind('/') + 1:]
 		if len(r.text) > 1950:
 			await ctx.send(f"{ctx.author.mention} File is too long! SpAm InCoMiNg!!1!")
 			index_start = 0
