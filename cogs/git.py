@@ -10,23 +10,45 @@ class Git(commands.Cog):
 
 	@commands.command()
 	async def git(self, ctx, *, message):
-		flags = re.findall("\s*(?P<repo>[^\s^/]*/[^\s^/]*)(?P<dir>/[^\s]*)\s+--format\s+(?P<syntax>[-]?[^-]*[^-\s])", message)
-		r = requests.get(f"https://raw.githubusercontent.com/{flags[0][0]}/master{flags[0][1]}")
+		flags = re.findall("(\s*(?P<repo>[^\s^\/]*/[^\s^\/]*/)(?P<dir>[^\s]+))|(?P<flags>\s+--(?P<flag>[^\s]*)\s+(?P<val>[^-]*[^-\s]))", message)
+		format_str = ""
+		branch = ""
+		for i, flag in enumerate(flags):
+			if flag[4] == "format":
+				if not format_str:
+					format_str = flag[5]
+				else:
+					await ctx.send('Two format flags!')
+					return
+			elif flag[4] == "branch":
+				if not branch:
+					branch = flag[5]
+				else:
+					await ctx.send('Two branch flags!')
+					return
+		if not branch:
+			branch = "master"
+		r = requests.get(f"https://raw.githubusercontent.com/{flags[0][1]}{branch}/{flags[0][2]}")
 		if not r:
-			await ctx.send("Something went wrong!")
-		elif len(r.text) > 1950:
-			await ctx.send(f"{ctx.author.mention}File is too long! SpAm InCoMiNg!!1!")
+			await ctx.send("Link does not seem to exist! Check if flags are correct!")
+			return
+		if not format_str:
+			print(flags[0][2].rfind('.'))
+			print(flags[0][2][flags[0][2].rfind('.') + 1:])
+			format_str = str(flags[0][2][flags[0][2].rfind('.') + 1:])
+		if len(r.text) > 1950:
+			await ctx.send(f"{ctx.author.mention} File is too long! SpAm InCoMiNg!!1!")
 			index_start = 0
 			while (len(r.text[index_start:]) > 1950):
-				index_end = index_start + r.text.rfind("\n", index_start, index_start + 1950)
-				printer = f"```{flags[0][2]}\n{r.text[index_start:index_end]}```"
+				index_end = r.text.rfind("\n", index_start, index_start + 1950)
+				printer = f"```{format_str}\n{r.text[index_start:index_end]}```"
 				await ctx.send(printer)
 				index_start = index_end
-			index_end = index_start + r.text.rfind("\n", index_start, index_start + 1950)
-			printer = f"```{flags[0][2]}\n{r.text[index_start:index_end]}```"
+			index_end = r.text.rfind("\n", index_start, len(r.text[index_start:]))
+			printer = f"```{format_str}\n{r.text[index_start:index_end]}```"
 			await ctx.send(printer)
 		else:
-			await ctx.send(f'```{flags[0][2]}\n{r.text[:1950]}```')
+			await ctx.send(f'```{format_str}\n{r.text[:1950]}```')
 
 def setup(client):
 	client.add_cog(Git(client))
