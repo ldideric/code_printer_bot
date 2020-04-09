@@ -1,12 +1,27 @@
 import discord
 from discord.ext import commands
 import requests
+import json
 import re
+
+with open('./info.json') as json_file:
+	info = json.load(json_file)
 
 class Git(commands.Cog):
 
 	def __init__(self, client):
 		self.client = client
+
+	@commands.command()
+	async def info(self, ctx):
+		if ctx.guild is not None:
+			await ctx.send(f"{ctx.author.mention}\nA Private Message has been sent with information!")
+		embed = discord.Embed(
+			title = info[0]['title'],
+			description = info[0]['message'],
+			colour = discord.Colour.blue()
+		)
+		await ctx.author.send(embed=embed)
 
 	@commands.command()
 	async def git(self, ctx, *, message):

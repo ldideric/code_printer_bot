@@ -8,7 +8,7 @@ class Events(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_ready(self):
-		activity = discord.Game(name="?git [path] --format [language]")
+		activity = discord.Game(name="?info for help!")
 		await self.client.change_presence(status=discord.Status.online, activity=activity)
 		print('Bot is ready.')
 

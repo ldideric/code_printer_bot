@@ -1,0 +1,2 @@
+[	{"title":"Welcome to the GitRepo Printer bot!",
+		"message":"With this bot you can print files that are on github, with the specific link.\n\nYou can use the flag `--format` to specify the markdown highlight\n\nYou can use the flag `--branch` to specify the branch that the file is in. Default is `master`\n\nExample:\n`?git github_user/repo_name/dir/file.c --branch test --format c`"}]
